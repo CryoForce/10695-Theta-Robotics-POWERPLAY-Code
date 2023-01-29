@@ -246,8 +246,11 @@ public class DriveAutoRight extends LinearOpMode {
 
 
             if (liftPos == 0) {
-              target = 25;
-            }else if (liftPos == 2) {
+                target = 25;
+            } else if (liftPos == 1) {
+                target = 925;
+
+            } else if (liftPos == 2) {
                 target = 1690;
             }
 
@@ -274,13 +277,11 @@ public class DriveAutoRight extends LinearOpMode {
             } else if (scoringPos == 0) {
 
                 //Open Claw
-                robot.rightClaw.setPosition(0.34);
-                robot.leftClaw.setPosition(0.34);
+                robot.openClaw();
 
                 if (clawTime.milliseconds() > 600) {
                     //Pull Horizontal Extension In
-                    robot.leftH.setPosition(0.61);
-                    robot.rightH.setPosition(0.64);
+                    robot.horiontalIn();
                 }
 
                 if (liftTime.milliseconds() > 900) {
@@ -297,7 +298,7 @@ public class DriveAutoRight extends LinearOpMode {
                 if (v4bPos == 0) {
 
 
-                    if (v4bTime.milliseconds() > 500) {
+                    if(v4bTime.milliseconds() > 500){
                         robot.rightV4b.setPosition(0.866);
                         robot.leftV4b.setPosition(0.866);
                     }
@@ -313,31 +314,30 @@ public class DriveAutoRight extends LinearOpMode {
                 }
 
 
+
             } else if (scoringPos == 1) {
                 lowPole = 1;
 
                 //Close Claw
-                robot.rightClaw.setPosition(0.20);
-                robot.leftClaw.setPosition(0.47);
+                robot.closeClaw();
 
                 if (clawTime.milliseconds() > 250) {
 
                     //Raise Virtual 4 Bar
-                    robot.rightV4b.setPosition(0.41);
-                    robot.leftV4b.setPosition(0.41);
-                    v4bPos = 3;
+                    robot.v4bSH();
+                    v4bPos = 2;
 
                 }
-                if (v4bPos == 3) {
-                    if (liftWaitTime.milliseconds() > 550) {
+                if (v4bPos == 2) {
+                    if(liftWaitTime.milliseconds() > 550){
+
                         //Raise Lift
-                        liftPos = 2;
+                        liftPos = 1;
                     }
                 }
-                if (armPos > 150) {
+                if (armPos > 250) {
                     //Extend Horizontal Extension
-                    robot.rightH.setPosition(0.36);
-                    robot.leftH.setPosition(0.36);
+                    robot.horiontalOut();
                     v4bPos = 0;
 
                 }
@@ -349,14 +349,12 @@ public class DriveAutoRight extends LinearOpMode {
                 lowPole = 1;
 
                 //Close Claw
-                robot.rightClaw.setPosition(0.20);
-                robot.leftClaw.setPosition(0.47);
+                robot.closeClaw();
 
                 if (clawTime.milliseconds() > 250) {
 
                     //Raise Virtual 4 Bar
-                    robot.rightV4b.setPosition(0.41);
-                    robot.leftV4b.setPosition(0.41);
+                    robot.v4bSH();
                     v4bPos = 3;
 
                 }
@@ -368,12 +366,49 @@ public class DriveAutoRight extends LinearOpMode {
                 }
                 if (armPos > 150) {
                     //Extend Horizontal Extension
-                    robot.rightH.setPosition(0.36);
-                    robot.leftH.setPosition(0.36);
+//                    robot.rightH.setPosition(0.36);
+//                    robot.leftH.setPosition(0.36);
                     v4bPos = 0;
 
                 }
                 if (v4bPos == 0) {
+                    scoringPos = -1;
+                }
+
+            } else if (scoringPos == 3) {
+
+                //Close Claw
+                robot.closeClaw();
+
+                if (clawTime.milliseconds() > 250) {
+
+                    //Raise Virtual 4 Bar
+                    robot.v4blowPole();
+                    v4bPos = 4;
+                    lowPole = 2;
+
+                }
+
+                if (v4bPos == 4) {
+                    scoringPos = -1;
+                }
+
+
+            }else if (scoringPos == 4) {
+
+                //Close Claw
+                robot.closeClaw();
+
+                if (clawTime.milliseconds() > 250) {
+
+                    //Raise Virtual 4 Bar
+                    robot.v4bGround();
+                    v4bPos = 4;
+                    lowPole = 2;
+
+                }
+
+                if (v4bPos == 4) {
                     scoringPos = -1;
                 }
 

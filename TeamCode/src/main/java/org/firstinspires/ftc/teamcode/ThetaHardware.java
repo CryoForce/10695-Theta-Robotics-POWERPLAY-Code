@@ -92,9 +92,6 @@ public class ThetaHardware {
     public Telemetry t;
 
 
-
-
-
     private OpenCvCamera camera;
     private AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -105,6 +102,7 @@ public class ThetaHardware {
     private ElapsedTime waitTime = new ElapsedTime();
     LinearOpMode thOpMode;
 
+    Constants constants = new Constants();
 
     ElapsedTime runtime = new ElapsedTime();
 
@@ -154,7 +152,6 @@ public class ThetaHardware {
         //set input mode
 
 
-
         frontLeft.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         backLeft.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
         frontRight.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
@@ -183,7 +180,6 @@ public class ThetaHardware {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftMain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftOther.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
 
         telemetry.addData("Status", "init Complete");    //
@@ -261,41 +257,88 @@ public class ThetaHardware {
     }
 
 
+    public void driveForCounts(int counts, double left, double right, int maxMS) {
+        int frontLeftcounts = 0, frontRightcounts = 0, backLeftcounts = 0, backRightcounts = 0;
 
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-   public void driveForCounts( int counts, double left, double right, int maxMS )
-{
-    int frontLeftcounts = 0, frontRightcounts = 0, backLeftcounts = 0, backRightcounts = 0;
+        frontLeft.setPower(-left);
+        backLeft.setPower(left);
+        frontRight.setPower(right);
+        backRight.setPower(-right);
 
-    frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-    backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        waitTime.reset();
 
-    frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        while ((waitTime.milliseconds() < maxMS) && thOpMode.opModeIsActive() && (Math.abs(frontLeftcounts) < counts)) {
+            frontLeftcounts = frontLeft.getCurrentPosition();
+            frontRightcounts = frontRight.getCurrentPosition();
+            backLeftcounts = backLeft.getCurrentPosition();
+            backRightcounts = backRight.getCurrentPosition();
+        }
 
-    frontLeft.setPower(-left);
-    backLeft.setPower(left);
-    frontRight.setPower(right);
-    backRight.setPower(-right);
-
-    waitTime.reset();
-
-    while((waitTime.milliseconds() < maxMS) && thOpMode.opModeIsActive() && (Math.abs(frontLeftcounts) < counts)) {
-        frontLeftcounts = frontLeft.getCurrentPosition();
-        frontRightcounts = frontRight.getCurrentPosition();
-        backLeftcounts = backLeft.getCurrentPosition();
-        backRightcounts = backRight.getCurrentPosition();
-    }
-
-    setDrivePower(0,0);
+        setDrivePower(0, 0);
 
 
     }
+
+    public void v4bUp() {
+        rightV4b.setPosition(constants.v4balignemntPos);
+        leftV4b.setPosition(constants.v4balignemntPos);
+    }
+
+    public void v4bSH() {
+        rightV4b.setPosition(constants.v4bscoringPos);
+        leftV4b.setPosition(constants.v4bscoringPos);
+    }
+
+    public void v4blowPole(){
+        rightV4b.setPosition(constants.v4blowPole);
+        leftV4b.setPosition(constants.v4blowPole);
+    }
+
+    public void v4bGround(){
+        rightV4b.setPosition(constants.v4bgroundPos);
+        leftV4b.setPosition(constants.v4bgroundPos);
+    }
+
+    public void intakePos(){
+        rightV4b.setPosition(constants.v4bintakePos);
+        leftV4b.setPosition(constants.v4bintakePos);
+    }
+
+
+    public void closeClaw(){
+        rightClaw.setPosition(constants.rightClawClose);
+        leftClaw.setPosition(constants.leftClawClose);
+    }
+
+    public void openClaw(){
+        rightClaw.setPosition(constants.clawOpen);
+        leftClaw.setPosition(constants.clawOpen);
+    }
+
+    public void horiontalIn(){
+        rightH.setPosition(constants.righthorizontalIn);
+        leftH.setPosition(constants.lefthorizontalIn);
+    }
+
+    public void horiontalOut(){
+        rightH.setPosition(constants.horizontalExtend);
+        leftH.setPosition(constants.horizontalExtend);
+    }
+
+
+
+
+
 
 
 

@@ -38,6 +38,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.hardware.ControlSystem;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -83,6 +84,10 @@ public class ThetaTeleop extends LinearOpMode {
 
     public static double p = 0.018, i = 0, d = 0.001;
     public static double f = 0.075;
+
+
+
+    Constants cons = new Constants();
 
 
     ElapsedTime clawTime = new ElapsedTime();
@@ -163,12 +168,10 @@ public class ThetaTeleop extends LinearOpMode {
 
             if (liftPos == 0) {
                 target = 25;
-            }
-            if (liftPos == 1) {
+            } else if (liftPos == 1) {
                 target = 925;
 
-            }
-            if (liftPos == 2) {
+            } else if (liftPos == 2) {
                 target = 1690;
             }
 
@@ -214,13 +217,11 @@ public class ThetaTeleop extends LinearOpMode {
             } else if (scoringPos == 0) {
 
                 //Open Claw
-                robot.rightClaw.setPosition(0.34);
-                robot.leftClaw.setPosition(0.34);
+                robot.openClaw();
 
                 if (clawTime.milliseconds() > 600) {
                     //Pull Horizontal Extension In
-                    robot.leftH.setPosition(0.61);
-                    robot.rightH.setPosition(0.64);
+                    robot.horiontalIn();
                 }
 
                 if (liftTime.milliseconds() > 900) {
@@ -237,8 +238,6 @@ public class ThetaTeleop extends LinearOpMode {
                 if (v4bPos == 0) {
 
 
-
-
                         if(v4bTime.milliseconds() > 500){
                             robot.rightV4b.setPosition(0.866);
                             robot.leftV4b.setPosition(0.866);
@@ -251,9 +250,6 @@ public class ThetaTeleop extends LinearOpMode {
                         }
 
 
-
-
-
                     scoringPos = -1;
                 }
 
@@ -263,14 +259,12 @@ public class ThetaTeleop extends LinearOpMode {
                 lowPole = 1;
 
                 //Close Claw
-                robot.rightClaw.setPosition(0.20);
-                robot.leftClaw.setPosition(0.47);
+                robot.closeClaw();
 
                 if (clawTime.milliseconds() > 250) {
 
                     //Raise Virtual 4 Bar
-                    robot.rightV4b.setPosition(0.40);
-                    robot.leftV4b.setPosition(0.40);
+                    robot.v4bSH();
                     v4bPos = 2;
 
                 }
@@ -283,8 +277,7 @@ public class ThetaTeleop extends LinearOpMode {
                 }
                 if (armPos > 250) {
                     //Extend Horizontal Extension
-                    robot.rightH.setPosition(0.36);
-                    robot.leftH.setPosition(0.36);
+                    robot.horiontalOut();
                     v4bPos = 0;
 
                 }
@@ -296,14 +289,12 @@ public class ThetaTeleop extends LinearOpMode {
                 lowPole = 1;
 
                 //Close Claw
-                robot.rightClaw.setPosition(0.20);
-                robot.leftClaw.setPosition(0.47);
+                robot.closeClaw();
 
                 if (clawTime.milliseconds() > 250) {
 
                     //Raise Virtual 4 Bar
-                    robot.rightV4b.setPosition(0.41);
-                    robot.leftV4b.setPosition(0.41);
+                    robot.v4bSH();
                     v4bPos = 3;
 
                 }
@@ -327,14 +318,12 @@ public class ThetaTeleop extends LinearOpMode {
             } else if (scoringPos == 3) {
 
                 //Close Claw
-                robot.rightClaw.setPosition(0.20);
-                robot.leftClaw.setPosition(0.47);
+                robot.closeClaw();
 
                 if (clawTime.milliseconds() > 250) {
 
                     //Raise Virtual 4 Bar
-                    robot.rightV4b.setPosition(0.38);
-                    robot.leftV4b.setPosition(0.38);
+                    robot.v4blowPole();
                     v4bPos = 4;
                     lowPole = 2;
 
@@ -348,14 +337,12 @@ public class ThetaTeleop extends LinearOpMode {
             }else if (scoringPos == 4) {
 
                 //Close Claw
-                robot.rightClaw.setPosition(0.20);
-                robot.leftClaw.setPosition(0.47);
+                robot.closeClaw();
 
                 if (clawTime.milliseconds() > 250) {
 
                     //Raise Virtual 4 Bar
-                    robot.rightV4b.setPosition(0.81);
-                    robot.leftV4b.setPosition(0.81);
+                    robot.v4bGround();
                     v4bPos = 4;
                     lowPole = 2;
 
@@ -374,26 +361,28 @@ public class ThetaTeleop extends LinearOpMode {
 
             if(coneStackPos == 1){
 
-                robot.rightV4b.setPosition(0.77);
-                robot.leftV4b.setPosition(0.77);
+                robot.rightV4b.setPosition(cons.topCone);
+                robot.leftV4b.setPosition(cons.topCone);
 
             }else if(coneStackPos == 2){
 
-                robot.rightV4b.setPosition(0.79);
-                robot.leftV4b.setPosition(0.79);
+                robot.rightV4b.setPosition(cons.secondCone);
+                robot.leftV4b.setPosition(cons.secondCone);
 
             }else if(coneStackPos == 3){
 
-                robot.rightV4b.setPosition(0.81);
-                robot.leftV4b.setPosition(0.81);
+                robot.rightV4b.setPosition(cons.thirdCone);
+                robot.leftV4b.setPosition(cons.thirdCone);
 
             }else if(coneStackPos == 4){
-                robot.rightV4b.setPosition(0.83);
-                robot.leftV4b.setPosition(0.83);
+                robot.rightV4b.setPosition(cons.fourthCone);
+                robot.leftV4b.setPosition(cons.fourthCone);
 
             }else if(coneStackPos == 5){
                 coneStackPos = 0;
             }
+
+
 
             if (gamepad1.dpad_up && !dpadDown) {
                 dpadPressed = !dpadPressed;
@@ -450,12 +439,10 @@ public class ThetaTeleop extends LinearOpMode {
 
                 }
                 if (gamepad1.right_bumper) {
-                    robot.rightV4b.setPosition(0.442);
-                    robot.leftV4b.setPosition(0.442);
+                    robot.v4bUp();
                 }
                 if (gamepad1.left_bumper) {
-                    robot.rightV4b.setPosition(0.876);
-                    robot.leftV4b.setPosition(0.876);
+                    robot.intakePos();
                 }
                 if(gamepad1.back){
                     scoringPos = 4;
