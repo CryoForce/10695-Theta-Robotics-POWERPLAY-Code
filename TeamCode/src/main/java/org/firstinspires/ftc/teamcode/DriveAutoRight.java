@@ -246,8 +246,8 @@ public class DriveAutoRight extends LinearOpMode {
 
 
             if (liftPos == 0) {
-//              target = 25;
-//          }else if (liftPos == 2) {
+              target = 25;
+            }else if (liftPos == 2) {
                 target = 1690;
             }
 
@@ -380,21 +380,8 @@ public class DriveAutoRight extends LinearOpMode {
 
             }
 
-        }
-
-
-            // Wait for the game to start (driver presses PLAY)
-            waitForStart();
-
 
             if (aprilTPos == 1) {
-
-
-//
-//        robot.strafeForCounts(700, .5, .5, 3000);
-//
-//        robot.driveForCounts(800, .5, .5, 2000);
-//
 
 
                 robot.strafeForCounts(75, -.5, -.5, 3000);
@@ -480,11 +467,6 @@ public class DriveAutoRight extends LinearOpMode {
 
             }
             if (aprilTPos == 3) {
-//        robot.strafeForCounts(950, -.5, -.5, 3000);
-//
-//        robot.driveForCounts(800, .5, .5, 2000);
-//
-
 
                 robot.strafeForCounts(75, -.5, -.5, 3000);
 
@@ -531,7 +513,14 @@ public class DriveAutoRight extends LinearOpMode {
             }
 
 
-//
+        }
+
+
+            // Wait for the game to start (driver presses PLAY)
+
+
+
+
 
 
             // Step through each leg of the path,

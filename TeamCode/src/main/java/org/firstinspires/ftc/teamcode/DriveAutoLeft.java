@@ -215,14 +215,9 @@ public class DriveAutoLeft extends LinearOpMode {
 
         if(aprilTPos == 1){
 
-
-
             robot.strafeForCounts(800, .5, .5, 3000);
 
             robot.driveForCounts(800, .5, .5, 2000);
-
-
-
 
         }
         if(aprilTPos == 2){
