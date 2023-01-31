@@ -13,9 +13,10 @@ public class Constants {
    public double v4bgroundPos = 0.81;
    public double v4bintakePos = 0.87;
 
-   public double lefthorizontalIn = 0.61;
+   public double lefthorizontalIn = 0.62;
    public double righthorizontalIn = 0.64;
-   public double horizontalExtend = 0.36;
+   public double lefthorizontalExtend = 0.37;
+   public double righthorizontalExtend = 0.36;
 
    public double topCone = 0.77;
    public double secondCone = 0.79;

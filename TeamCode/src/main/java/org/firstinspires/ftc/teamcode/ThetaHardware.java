@@ -331,8 +331,8 @@ public class ThetaHardware {
     }
 
     public void horiontalOut(){
-        rightH.setPosition(constants.horizontalExtend);
-        leftH.setPosition(constants.horizontalExtend);
+        rightH.setPosition(constants.righthorizontalExtend);
+        leftH.setPosition(constants.lefthorizontalExtend);
     }
 
 

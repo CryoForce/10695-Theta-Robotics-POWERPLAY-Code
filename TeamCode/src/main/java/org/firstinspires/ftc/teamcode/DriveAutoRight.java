@@ -55,7 +55,7 @@ public class DriveAutoRight extends LinearOpMode {
     /* Declare OpMode members. */
     ThetaHardware robot = new ThetaHardware(this);   // Use a Theta's hardware
 
-
+    Constants constants = new Constants();
     private ElapsedTime runtime = new ElapsedTime();
 
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
@@ -66,16 +66,17 @@ public class DriveAutoRight extends LinearOpMode {
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
 
-
+    int runloop = 1;
     double scoringPos;
     int v4bPos;
     boolean v4bDown;
     int lowPole;
     static int target = 0;
     private final double ticks_in_degrees = 384.5 / 360;
+    int lift = 0;
     int liftPos = 0;
 
-    PIDController controller;
+    PIDController controller = new PIDController(p,i, d);
 
     public static double p = 0.018, i = 0, d = 0.001;
     public static double f = 0.075;
@@ -157,11 +158,13 @@ public class DriveAutoRight extends LinearOpMode {
 
         robot.rightV4b.setPosition(0.85);
         robot.leftV4b.setPosition(0.85);
+        liftPos = 0;
+        scoringPos = -1;
 
 
         robot.rightClaw.setPosition(0.2);
         robot.leftClaw.setPosition(0.47);
-        robot.leftH.setPosition(0.64);
+        robot.leftH.setPosition(0.62);
         robot.rightH.setPosition(0.64);
 
         clawTime.reset();
@@ -234,318 +237,393 @@ public class DriveAutoRight extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            controller.setPID(p, i, d);
-            int armPos = robot.liftOther.getCurrentPosition();
-            double pid = controller.calculate(armPos, target);
-            double ff = Math.cos(Math.toRadians(target / ticks_in_degrees)) * f;
+//            controller.setPID(p, i, d);
+//            int armPos = robot.liftOther.getCurrentPosition();
+//            double pid = controller.calculate(armPos, target);
+//            double ff = Math.cos(Math.toRadians(target / ticks_in_degrees)) * f;
+//
+//            double liftPower = pid + ff;
+//
+//            robot.liftOther.setPower(liftPower);
+//            robot.liftMain.setPower(liftPower);
+//
+//
+//            if (liftPos == 0) {
+//                target = 25;
+//            } else if (liftPos == 1) {
+//                target = 925;
+//
+//            } else if (liftPos == 2) {
+//                target = 1690;
+//            }
+//
+//
+//            //
+//            //
+//            //
+//
+//
+//            if (scoringPos == -1) {
+//                clawTime.reset();
+//                v4bTime.reset();
+//                liftTime.reset();
+//                clawOpenTime.reset();
+//                liftWaitTime.reset();
+//
+//
+//                v4bDown = false;
+//
+//                v4bPos = 1;
+//                lowPole = 3;
+//
+//
+//            } else if (scoringPos == 0) {
+//
+//                //Open Claw
+//                robot.openClaw();
+//
+//                if (clawTime.milliseconds() > 600) {
+//                    //Pull Horizontal Extension In
+//                    robot.horiontalIn();
+//                }
+//
+//                if (liftTime.milliseconds() > 900) {
+//                    //Lower Lift
+//
+//                    liftPos = 0;
+//                    v4bPos = 0;
+//                    clawOpenTime.reset();
+//                    v4bTime.reset();
+//
+//                }
+//
+//
+//                if (v4bPos == 0) {
+//
+//
+//                    if(v4bTime.milliseconds() > 500){
+//                        robot.rightV4b.setPosition(0.866);
+//                        robot.leftV4b.setPosition(0.866);
+//                    }
+//
+//                    if (clawOpenTime.milliseconds() > 900) {
+//                        robot.rightClaw.setPosition(0.37);
+//                        robot.leftClaw.setPosition(0.31);
+//
+//                    }
+//
+//
+//                    scoringPos = -1;
+//                }
+//
+//
+//
+//            } else if (scoringPos == 1) {
+//                lowPole = 1;
+//
+//                //Close Claw
+//                robot.closeClaw();
+//
+//                if (clawTime.milliseconds() > 250) {
+//
+//                    //Raise Virtual 4 Bar
+//                    robot.v4bSH();
+//                    v4bPos = 2;
+//
+//                }
+//                if (v4bPos == 2) {
+//                    if(liftWaitTime.milliseconds() > 550){
+//
+//                        //Raise Lift
+//                        liftPos = 1;
+//                    }
+//                }
+//                if (armPos > 250) {
+//                    //Extend Horizontal Extension
+//                    robot.horiontalOut();
+//                    v4bPos = 0;
+//
+//                }
+//                if (v4bPos == 0) {
+//                    scoringPos = -1;
+//                }
+//
+//            } else if (scoringPos == 2) {
+//                lowPole = 1;
+//
+//                //Close Claw
+//                robot.closeClaw();
+//
+//                if (clawTime.milliseconds() > 250) {
+//
+//                    //Raise Virtual 4 Bar
+//                    robot.v4bSH();
+//                    v4bPos = 3;
+//
+//                }
+//                if (v4bPos == 3) {
+//                    if (liftWaitTime.milliseconds() > 550) {
+//                        //Raise Lift
+//                        liftPos = 2;
+//                    }
+//                }
+//                if (armPos > 150) {
+//                    //Extend Horizontal Extension
+////                    robot.rightH.setPosition(0.36);
+////                    robot.leftH.setPosition(0.36);
+//                    v4bPos = 0;
+//
+//                }
+//                if (v4bPos == 0) {
+//                    scoringPos = -1;
+//                }
+//
+//            } else if (scoringPos == 3) {
+//
+//                //Close Claw
+//                robot.closeClaw();
+//
+//                if (clawTime.milliseconds() > 250) {
+//
+//                    //Raise Virtual 4 Bar
+//                    robot.v4blowPole();
+//                    v4bPos = 4;
+//                    lowPole = 2;
+//
+//                }
+//
+//                if (v4bPos == 4) {
+//                    scoringPos = -1;
+//                }
+//
+//
+//            }else if (scoringPos == 4) {
+//
+//                //Close Claw
+//                robot.closeClaw();
+//
+//                if (clawTime.milliseconds() > 250) {
+//
+//                    //Raise Virtual 4 Bar
+//                    robot.v4bGround();
+//                    v4bPos = 4;
+//                    lowPole = 2;
+//
+//                }
+//
+//                if (v4bPos == 4) {
+//                    scoringPos = -1;
+//                }
+//
+//
+//            }
 
-            double liftPower = pid + ff;
-
-            robot.liftOther.setPower(liftPower);
-            robot.liftMain.setPower(liftPower);
 
 
-            if (liftPos == 0) {
-                target = 25;
-            } else if (liftPos == 1) {
-                target = 925;
 
-            } else if (liftPos == 2) {
-                target = 1690;
-            }
+                if (aprilTPos == 1) {
 
 
-            //
-            //
-            //
+                    robot.strafeForCounts(75, -.5, -.5, 3000);
+
+                    //drive to pole
+                    robot.driveForCounts(700, .5, .5, 2000);
+
+                    robot.thetaWait(0.05);
+
+                    robot.driveForCounts(440, .5, -.5, 2000);
+
+                    robot.thetaWait(0.05);
+
+                    robot.driveForCounts(25, .5, .5, 2000);
 
 
-            if (scoringPos == -1) {
-                clawTime.reset();
-                v4bTime.reset();
-                liftTime.reset();
-                clawOpenTime.reset();
-                liftWaitTime.reset();
+                    robot.rightV4b.setPosition(0.38);
+                    robot.leftV4b.setPosition(0.38);
+
+                    robot.thetaWait(0.05);
+
+                    robot.rightV4b.setPosition(0.38);
+                    robot.leftV4b.setPosition(0.38);
+
+                    robot.thetaWait(1.5);
+
+                    robot.rightClaw.setPosition(0.34);
+                    robot.leftClaw.setPosition(0.34);
+
+                    robot.thetaWait(0.5);
+
+                    robot.rightV4b.setPosition(0.876);
+                    robot.leftV4b.setPosition(0.876);
+
+                    robot.driveForCounts(25, -.5, -.5, 2000);
 
 
-                v4bDown = false;
+                    robot.driveForCounts(410, -.5, .5, 2000);
 
-                v4bPos = 1;
-                lowPole = 3;
+                    robot.strafeForCounts(875, .5, .5, 3000);
+
+                    robot.thetaWait(30);
+
+                }
+                if (aprilTPos == 2) {
+
+                    robot.strafeForCounts(75, -.5, -.5, 3000);
+
+                    //drive to pole
+                    robot.driveForCounts(700, .5, .5, 2000);
+
+                    robot.thetaWait(0.05);
+
+                    robot.driveForCounts(440, .5, -.5, 2000);
+
+                    robot.thetaWait(0.05);
 
 
-            } else if (scoringPos == 0) {
+                    robot.driveForCounts(25, .5, .5, 2000);
 
-                //Open Claw
-                robot.openClaw();
+                    robot.rightV4b.setPosition(0.38);
+                    robot.leftV4b.setPosition(0.38);
 
-                if (clawTime.milliseconds() > 600) {
-                    //Pull Horizontal Extension In
-                    robot.horiontalIn();
+                    robot.thetaWait(0.05);
+
+                    robot.rightV4b.setPosition(0.38);
+                    robot.leftV4b.setPosition(0.38);
+
+                    robot.thetaWait(1.5);
+
+                    robot.rightClaw.setPosition(0.34);
+                    robot.leftClaw.setPosition(0.34);
+
+                    robot.thetaWait(0.5);
+
+                    robot.rightV4b.setPosition(0.876);
+                    robot.leftV4b.setPosition(0.876);
+
+                    robot.driveForCounts(25, -.5, -.5, 2000);
+
+
+                    robot.driveForCounts(410, -.5, .5, 2000);
+
+                    robot.thetaWait(30);
+                }
+                if (aprilTPos == 3) {
+
+
+                    robot.strafeForCounts(75, -.5, -.5, 3000);
+
+                    //drive to pole
+                    robot.driveForCounts(710, .5, .5, 2000);
+                    robot.thetaWait(0.05);
+                    robot.driveForCounts(440, .5, -.5, 2000);
+                    robot.thetaWait(0.05);
+                    robot.driveForCounts(25, .5, .5, 2000);
+
+                    //score on pole then get ready to pick up cone
+                    robot.rightV4b.setPosition(0.38);
+                    robot.leftV4b.setPosition(0.38);
+
+                    robot.thetaWait(1.5);
+
+                    robot.rightClaw.setPosition(0.34);
+                    robot.leftClaw.setPosition(0.34);
+
+                    robot.thetaWait(0.5);
+
+                    robot.rightV4b.setPosition(constants.v4bintakePos);
+                    robot.leftV4b.setPosition(constants.v4bintakePos);
+
+                    robot.driveForCounts(25, -.5, -.5, 2000);
+
+                    //go to cone stack
+                    robot.driveForCounts(385, -.5, .5, 3000);
+                    robot.driveForCounts(555, .5, .5, 3000);
+                    robot.driveForCounts(620, -.5, .5, 3000);
+                    robot.driveForCounts(740, -.35, -.35, 3000);
+
+//                    robot.thetaWait(0.1);
+//
+//                    //close claw
+//                    robot.rightClaw.setPosition(0.2);
+//                    robot.leftClaw.setPosition(0.47);
+//
+//                    robot.thetaWait(0.25);
+//
+//                    robot.rightV4b.setPosition(constants.v4balignemntPos);
+//                    robot.leftV4b.setPosition(constants.v4balignemntPos);
+//
+//                    robot.thetaWait(0.05);
+//
+//
+//                    robot.driveForCounts(350, -.5, .5, 3000);
+//
+//                    robot.rightV4b.setPosition(constants.v4blowPole);
+//                    robot.leftV4b.setPosition(constants.v4blowPole);
+//
+//                    robot.thetaWait(1);
+//
+//                    robot.rightClaw.setPosition(0.34);
+//                    robot.leftClaw.setPosition(0.34);
+//
+//                    robot.thetaWait(0.5);
+//
+//                    robot.driveForCounts(350, -.5, .5, 3000);
+//
+//                    robot.rightV4b.setPosition(constants.secondCone);
+//                    robot.leftV4b.setPosition(constants.secondCone);
+//
+//
+//
+//                    //second cone
+//                    robot.thetaWait(0.5);
+//
+//                    robot.rightClaw.setPosition(0.2);
+//                    robot.leftClaw.setPosition(0.47);
+//
+//                    robot.thetaWait(0.25);
+//
+//                    robot.rightV4b.setPosition(constants.v4balignemntPos);
+//                    robot.leftV4b.setPosition(constants.v4balignemntPos);
+//
+//                    robot.thetaWait(0.05);
+//
+//
+//                    robot.driveForCounts(350, -.5, .5, 3000);
+//
+//                    robot.rightV4b.setPosition(constants.v4blowPole);
+//                    robot.leftV4b.setPosition(constants.v4blowPole); v
+//
+//                    robot.thetaWait(1);
+//
+//                    robot.rightClaw.setPosition(0.34);
+//                    robot.leftClaw.setPosition(0.34);
+//
+//                    robot.thetaWait(0.5);
+//
+//                    robot.driveForCounts(350, -.5, .5, 3000);
+//
+//                    robot.rightV4b.setPosition(constants.thirdCone);
+//                    robot.leftV4b.setPosition(constants.thirdCone);
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    robot.thetaWait(30);
                 }
 
-                if (liftTime.milliseconds() > 900) {
-                    //Lower Lift
-
-                    liftPos = 0;
-                    v4bPos = 0;
-                    clawOpenTime.reset();
-                    v4bTime.reset();
-
-                }
-
-
-                if (v4bPos == 0) {
-
-
-                    if(v4bTime.milliseconds() > 500){
-                        robot.rightV4b.setPosition(0.866);
-                        robot.leftV4b.setPosition(0.866);
-                    }
-
-                    if (clawOpenTime.milliseconds() > 900) {
-                        robot.rightClaw.setPosition(0.37);
-                        robot.leftClaw.setPosition(0.31);
-
-                    }
-
-
-                    scoringPos = -1;
-                }
-
-
-
-            } else if (scoringPos == 1) {
-                lowPole = 1;
-
-                //Close Claw
-                robot.closeClaw();
-
-                if (clawTime.milliseconds() > 250) {
-
-                    //Raise Virtual 4 Bar
-                    robot.v4bSH();
-                    v4bPos = 2;
-
-                }
-                if (v4bPos == 2) {
-                    if(liftWaitTime.milliseconds() > 550){
-
-                        //Raise Lift
-                        liftPos = 1;
-                    }
-                }
-                if (armPos > 250) {
-                    //Extend Horizontal Extension
-                    robot.horiontalOut();
-                    v4bPos = 0;
-
-                }
-                if (v4bPos == 0) {
-                    scoringPos = -1;
-                }
-
-            } else if (scoringPos == 2) {
-                lowPole = 1;
-
-                //Close Claw
-                robot.closeClaw();
-
-                if (clawTime.milliseconds() > 250) {
-
-                    //Raise Virtual 4 Bar
-                    robot.v4bSH();
-                    v4bPos = 3;
-
-                }
-                if (v4bPos == 3) {
-                    if (liftWaitTime.milliseconds() > 550) {
-                        //Raise Lift
-                        liftPos = 2;
-                    }
-                }
-                if (armPos > 150) {
-                    //Extend Horizontal Extension
-//                    robot.rightH.setPosition(0.36);
-//                    robot.leftH.setPosition(0.36);
-                    v4bPos = 0;
-
-                }
-                if (v4bPos == 0) {
-                    scoringPos = -1;
-                }
-
-            } else if (scoringPos == 3) {
-
-                //Close Claw
-                robot.closeClaw();
-
-                if (clawTime.milliseconds() > 250) {
-
-                    //Raise Virtual 4 Bar
-                    robot.v4blowPole();
-                    v4bPos = 4;
-                    lowPole = 2;
-
-                }
-
-                if (v4bPos == 4) {
-                    scoringPos = -1;
-                }
-
-
-            }else if (scoringPos == 4) {
-
-                //Close Claw
-                robot.closeClaw();
-
-                if (clawTime.milliseconds() > 250) {
-
-                    //Raise Virtual 4 Bar
-                    robot.v4bGround();
-                    v4bPos = 4;
-                    lowPole = 2;
-
-                }
-
-                if (v4bPos == 4) {
-                    scoringPos = -1;
-                }
-
-
-            }
-
-
-            if (aprilTPos == 1) {
-
-
-                robot.strafeForCounts(75, -.5, -.5, 3000);
-
-                //drive to pole
-                robot.driveForCounts(690, .5, .5, 2000);
-
-                robot.thetaWait(0.05);
-
-                robot.driveForCounts(440, .5, -.5, 2000);
-
-                robot.thetaWait(0.05);
-
-                robot.driveForCounts(25, .5, .5, 2000);
-
-
-                robot.rightV4b.setPosition(0.38);
-                robot.leftV4b.setPosition(0.38);
-
-                robot.thetaWait(0.05);
-
-                robot.rightV4b.setPosition(0.38);
-                robot.leftV4b.setPosition(0.38);
-
-                robot.thetaWait(1.5);
-
-                robot.rightClaw.setPosition(0.34);
-                robot.leftClaw.setPosition(0.34);
-
-                robot.thetaWait(0.5);
-
-                robot.rightV4b.setPosition(0.876);
-                robot.leftV4b.setPosition(0.876);
-
-                robot.driveForCounts(25, -.5, -.5, 2000);
-
-
-                robot.driveForCounts(410, -.5, .5, 2000);
-
-                robot.strafeForCounts(875, .5, .5, 3000);
-
-
-            }
-            if (aprilTPos == 2) {
-
-                robot.strafeForCounts(75, -.5, -.5, 3000);
-
-                //drive to pole
-                robot.driveForCounts(690, .5, .5, 2000);
-
-                robot.thetaWait(0.05);
-
-                robot.driveForCounts(440, .5, -.5, 2000);
-
-                robot.thetaWait(0.05);
-
-
-                robot.driveForCounts(25, .5, .5, 2000);
-
-                robot.rightV4b.setPosition(0.38);
-                robot.leftV4b.setPosition(0.38);
-
-                robot.thetaWait(0.05);
-
-                robot.rightV4b.setPosition(0.38);
-                robot.leftV4b.setPosition(0.38);
-
-                robot.thetaWait(1.5);
-
-                robot.rightClaw.setPosition(0.34);
-                robot.leftClaw.setPosition(0.34);
-
-                robot.thetaWait(0.5);
-
-                robot.rightV4b.setPosition(0.876);
-                robot.leftV4b.setPosition(0.876);
-
-                robot.driveForCounts(25, -.5, -.5, 2000);
-
-
-                robot.driveForCounts(410, -.5, .5, 2000);
-
-
-            }
-            if (aprilTPos == 3) {
-
-                robot.strafeForCounts(75, -.5, -.5, 3000);
-
-                //drive to pole
-                robot.driveForCounts(700, .5, .5, 2000);
-
-                robot.thetaWait(0.05);
-
-                robot.driveForCounts(440, .5, -.5, 2000);
-
-                robot.thetaWait(0.05);
-
-                robot.driveForCounts(25, .5, .5, 2000);
-
-
-                robot.rightV4b.setPosition(0.38);
-                robot.leftV4b.setPosition(0.38);
-
-                robot.thetaWait(0.05);
-
-                robot.rightV4b.setPosition(0.38);
-                robot.leftV4b.setPosition(0.38);
-
-                robot.thetaWait(1.5);
-
-                robot.rightClaw.setPosition(0.34);
-                robot.leftClaw.setPosition(0.34);
-
-                robot.thetaWait(0.5);
-
-                robot.rightV4b.setPosition(0.876);
-                robot.leftV4b.setPosition(0.876);
-
-                robot.driveForCounts(25, -.5, -.5, 2000);
-
-
-                robot.driveForCounts(385, -.5, .5, 3000);
-
-                robot.driveForCounts(565, .5, .5, 3000);
-
-                robot.driveForCounts(625, -.5, .5, 3000);
-
-
-            }
 
 
         }
