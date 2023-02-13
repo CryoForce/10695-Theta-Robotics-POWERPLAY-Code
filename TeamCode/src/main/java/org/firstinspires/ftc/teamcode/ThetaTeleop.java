@@ -123,8 +123,6 @@ public class ThetaTeleop extends LinearOpMode {
 
         robot.rightClaw.setPosition(0.37);
         robot.leftClaw.setPosition(0.31);
-        robot.leftH.setPosition(0.61);
-        robot.rightH.setPosition(0.64);
 
         clawTime.reset();
         v4bTime.reset();
@@ -221,7 +219,6 @@ public class ThetaTeleop extends LinearOpMode {
 
                 if (clawTime.milliseconds() > 600) {
                     //Pull Horizontal Extension In
-                    robot.horiontalIn();
                 }
 
                 if (liftTime.milliseconds() > 900) {
@@ -264,7 +261,7 @@ public class ThetaTeleop extends LinearOpMode {
                 if (clawTime.milliseconds() > 250) {
 
                     //Raise Virtual 4 Bar
-                    robot.v4bSH();
+                    robot.v4bUp();
                     v4bPos = 2;
 
                 }
@@ -277,7 +274,7 @@ public class ThetaTeleop extends LinearOpMode {
                 }
                 if (armPos > 250) {
                     //Extend Horizontal Extension
-                    robot.horiontalOut();
+
                     v4bPos = 0;
 
                 }
@@ -294,7 +291,7 @@ public class ThetaTeleop extends LinearOpMode {
                 if (clawTime.milliseconds() > 250) {
 
                     //Raise Virtual 4 Bar
-                    robot.v4bSH();
+                    robot.v4bUp();
                     v4bPos = 3;
 
                 }
@@ -439,7 +436,7 @@ public class ThetaTeleop extends LinearOpMode {
 
                 }
                 if (gamepad1.right_bumper) {
-                    robot.v4bUp();
+                    robot.v4bSH();
                 }
                 if (gamepad1.left_bumper) {
                     robot.intakePos();

@@ -140,8 +140,7 @@ public class DriveAutoLeft extends LinearOpMode {
 
         robot.rightClaw.setPosition(0.2);
         robot.leftClaw.setPosition(0.47);
-        robot.leftH.setPosition(0.64);
-        robot.rightH.setPosition(0.64);
+
 
 
         while (!opModeIsActive())

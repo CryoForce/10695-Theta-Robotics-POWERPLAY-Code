@@ -164,8 +164,6 @@ public class DriveAutoRight extends LinearOpMode {
 
         robot.rightClaw.setPosition(0.2);
         robot.leftClaw.setPosition(0.47);
-        robot.leftH.setPosition(0.62);
-        robot.rightH.setPosition(0.64);
 
         clawTime.reset();
         v4bTime.reset();
@@ -237,186 +235,183 @@ public class DriveAutoRight extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-//            controller.setPID(p, i, d);
-//            int armPos = robot.liftOther.getCurrentPosition();
-//            double pid = controller.calculate(armPos, target);
-//            double ff = Math.cos(Math.toRadians(target / ticks_in_degrees)) * f;
-//
-//            double liftPower = pid + ff;
-//
-//            robot.liftOther.setPower(liftPower);
-//            robot.liftMain.setPower(liftPower);
-//
-//
-//            if (liftPos == 0) {
-//                target = 25;
-//            } else if (liftPos == 1) {
-//                target = 925;
-//
-//            } else if (liftPos == 2) {
-//                target = 1690;
-//            }
-//
-//
-//            //
-//            //
-//            //
-//
-//
-//            if (scoringPos == -1) {
-//                clawTime.reset();
-//                v4bTime.reset();
-//                liftTime.reset();
-//                clawOpenTime.reset();
-//                liftWaitTime.reset();
-//
-//
-//                v4bDown = false;
-//
-//                v4bPos = 1;
-//                lowPole = 3;
-//
-//
-//            } else if (scoringPos == 0) {
-//
-//                //Open Claw
-//                robot.openClaw();
-//
-//                if (clawTime.milliseconds() > 600) {
-//                    //Pull Horizontal Extension In
-//                    robot.horiontalIn();
-//                }
-//
-//                if (liftTime.milliseconds() > 900) {
-//                    //Lower Lift
-//
-//                    liftPos = 0;
-//                    v4bPos = 0;
-//                    clawOpenTime.reset();
-//                    v4bTime.reset();
-//
-//                }
-//
-//
-//                if (v4bPos == 0) {
-//
-//
-//                    if(v4bTime.milliseconds() > 500){
-//                        robot.rightV4b.setPosition(0.866);
-//                        robot.leftV4b.setPosition(0.866);
-//                    }
-//
-//                    if (clawOpenTime.milliseconds() > 900) {
-//                        robot.rightClaw.setPosition(0.37);
-//                        robot.leftClaw.setPosition(0.31);
-//
-//                    }
-//
-//
-//                    scoringPos = -1;
-//                }
-//
-//
-//
-//            } else if (scoringPos == 1) {
-//                lowPole = 1;
-//
-//                //Close Claw
-//                robot.closeClaw();
-//
-//                if (clawTime.milliseconds() > 250) {
-//
-//                    //Raise Virtual 4 Bar
-//                    robot.v4bSH();
-//                    v4bPos = 2;
-//
-//                }
-//                if (v4bPos == 2) {
-//                    if(liftWaitTime.milliseconds() > 550){
-//
-//                        //Raise Lift
-//                        liftPos = 1;
-//                    }
-//                }
-//                if (armPos > 250) {
-//                    //Extend Horizontal Extension
-//                    robot.horiontalOut();
-//                    v4bPos = 0;
-//
-//                }
-//                if (v4bPos == 0) {
-//                    scoringPos = -1;
-//                }
-//
-//            } else if (scoringPos == 2) {
-//                lowPole = 1;
-//
-//                //Close Claw
-//                robot.closeClaw();
-//
-//                if (clawTime.milliseconds() > 250) {
-//
-//                    //Raise Virtual 4 Bar
-//                    robot.v4bSH();
-//                    v4bPos = 3;
-//
-//                }
-//                if (v4bPos == 3) {
-//                    if (liftWaitTime.milliseconds() > 550) {
-//                        //Raise Lift
-//                        liftPos = 2;
-//                    }
-//                }
-//                if (armPos > 150) {
-//                    //Extend Horizontal Extension
-////                    robot.rightH.setPosition(0.36);
-////                    robot.leftH.setPosition(0.36);
-//                    v4bPos = 0;
-//
-//                }
-//                if (v4bPos == 0) {
-//                    scoringPos = -1;
-//                }
-//
-//            } else if (scoringPos == 3) {
-//
-//                //Close Claw
-//                robot.closeClaw();
-//
-//                if (clawTime.milliseconds() > 250) {
-//
-//                    //Raise Virtual 4 Bar
-//                    robot.v4blowPole();
-//                    v4bPos = 4;
-//                    lowPole = 2;
-//
-//                }
-//
-//                if (v4bPos == 4) {
-//                    scoringPos = -1;
-//                }
-//
-//
-//            }else if (scoringPos == 4) {
-//
-//                //Close Claw
-//                robot.closeClaw();
-//
-//                if (clawTime.milliseconds() > 250) {
-//
-//                    //Raise Virtual 4 Bar
-//                    robot.v4bGround();
-//                    v4bPos = 4;
-//                    lowPole = 2;
-//
-//                }
-//
-//                if (v4bPos == 4) {
-//                    scoringPos = -1;
-//                }
-//
-//
-//            }
+            controller.setPID(p, i, d);
+            int armPos = robot.liftOther.getCurrentPosition();
+            double pid = controller.calculate(armPos, target);
+            double ff = Math.cos(Math.toRadians(target / ticks_in_degrees)) * f;
+
+            double liftPower = pid + ff;
+
+            robot.liftOther.setPower(liftPower);
+            robot.liftMain.setPower(liftPower);
+
+
+            if (liftPos == 0) {
+                target = 25;
+            } else if (liftPos == 1) {
+                target = 925;
+
+            } else if (liftPos == 2) {
+                target = 1690;
+            }
+
+
+            //
+            //
+            //
+
+
+            if (scoringPos == -1) {
+                clawTime.reset();
+                v4bTime.reset();
+                liftTime.reset();
+                clawOpenTime.reset();
+                liftWaitTime.reset();
+
+
+                v4bDown = false;
+
+                v4bPos = 1;
+                lowPole = 3;
+
+
+            } else if (scoringPos == 0) {
+
+                //Open Claw
+                robot.openClaw();
+
+                if (clawTime.milliseconds() > 600) {
+                    //Pull Horizontal Extension In
+
+                }
+
+                if (liftTime.milliseconds() > 900) {
+                    //Lower Lift
+
+                    liftPos = 0;
+                    v4bPos = 0;
+                    clawOpenTime.reset();
+                    v4bTime.reset();
+
+                }
+
+
+                if (v4bPos == 0) {
+
+
+                    if(v4bTime.milliseconds() > 500){
+                        robot.rightV4b.setPosition(0.866);
+                        robot.leftV4b.setPosition(0.866);
+                    }
+
+                    if (clawOpenTime.milliseconds() > 900) {
+                        robot.rightClaw.setPosition(0.37);
+                        robot.leftClaw.setPosition(0.31);
+
+                    }
+
+
+                    scoringPos = -1;
+                }
+
+
+
+            } else if (scoringPos == 1) {
+                lowPole = 1;
+
+                //Close Claw
+                robot.closeClaw();
+
+                if (clawTime.milliseconds() > 250) {
+
+                    //Raise Virtual 4 Bar
+                    robot.v4bSH();
+                    v4bPos = 2;
+
+                }
+                if (v4bPos == 2) {
+                    if(liftWaitTime.milliseconds() > 550){
+
+                        //Raise Lift
+                        liftPos = 1;
+                    }
+                }
+                if (armPos > 250) {
+                    //Extend Horizontal Extension
+                    v4bPos = 0;
+
+                }
+                if (v4bPos == 0) {
+                    scoringPos = -1;
+                }
+
+            } else if (scoringPos == 2) {
+                lowPole = 1;
+
+                //Close Claw
+                robot.closeClaw();
+
+                if (clawTime.milliseconds() > 250) {
+
+                    //Raise Virtual 4 Bar
+                    robot.v4bSH();
+                    v4bPos = 3;
+
+                }
+                if (v4bPos == 3) {
+                    if (liftWaitTime.milliseconds() > 550) {
+                        //Raise Lift
+                        liftPos = 2;
+                    }
+                }
+                if (armPos > 150) {
+
+                    v4bPos = 0;
+
+                }
+                if (v4bPos == 0) {
+                    scoringPos = -1;
+                }
+
+            } else if (scoringPos == 3) {
+
+                //Close Claw
+                robot.closeClaw();
+
+                if (clawTime.milliseconds() > 250) {
+
+                    //Raise Virtual 4 Bar
+                    robot.v4blowPole();
+                    v4bPos = 4;
+                    lowPole = 2;
+
+                }
+
+                if (v4bPos == 4) {
+                    scoringPos = -1;
+                }
+
+
+            }else if (scoringPos == 4) {
+
+                //Close Claw
+                robot.closeClaw();
+
+                if (clawTime.milliseconds() > 250) {
+
+                    //Raise Virtual 4 Bar
+                    robot.v4bGround();
+                    v4bPos = 4;
+                    lowPole = 2;
+
+                }
+
+                if (v4bPos == 4) {
+                    scoringPos = -1;
+                }
+
+
+            }
 
 
 
@@ -427,7 +422,7 @@ public class DriveAutoRight extends LinearOpMode {
                     robot.strafeForCounts(75, -.5, -.5, 3000);
 
                     //drive to pole
-                    robot.driveForCounts(700, .5, .5, 2000);
+                    robot.driveForCounts(710, .5, .5, 2000);
 
                     robot.thetaWait(0.05);
 
@@ -443,8 +438,8 @@ public class DriveAutoRight extends LinearOpMode {
 
                     robot.thetaWait(0.05);
 
-                    robot.rightV4b.setPosition(0.38);
-                    robot.leftV4b.setPosition(0.38);
+                    robot.rightV4b.setPosition(0.40);
+                    robot.leftV4b.setPosition(0.40);
 
                     robot.thetaWait(1.5);
 
@@ -482,8 +477,6 @@ public class DriveAutoRight extends LinearOpMode {
 
                     robot.driveForCounts(25, .5, .5, 2000);
 
-                    robot.rightV4b.setPosition(0.38);
-                    robot.leftV4b.setPosition(0.38);
 
                     robot.thetaWait(0.05);
 
@@ -520,26 +513,19 @@ public class DriveAutoRight extends LinearOpMode {
                     robot.driveForCounts(25, .5, .5, 2000);
 
                     //score on pole then get ready to pick up cone
-                    robot.rightV4b.setPosition(0.38);
-                    robot.leftV4b.setPosition(0.38);
+
 
                     robot.thetaWait(1.5);
 
-                    robot.rightClaw.setPosition(0.34);
-                    robot.leftClaw.setPosition(0.34);
 
                     robot.thetaWait(0.5);
 
-                    robot.rightV4b.setPosition(constants.v4bintakePos);
-                    robot.leftV4b.setPosition(constants.v4bintakePos);
 
                     robot.driveForCounts(25, -.5, -.5, 2000);
 
                     //go to cone stack
-                    robot.driveForCounts(385, -.5, .5, 3000);
-                    robot.driveForCounts(555, .5, .5, 3000);
-                    robot.driveForCounts(620, -.5, .5, 3000);
-                    robot.driveForCounts(740, -.35, -.35, 3000);
+                    robot.strafeForCounts(855, -.5, -.5, 3000);
+
 
 //                    robot.thetaWait(0.1);
 //

@@ -82,8 +82,6 @@ public class ThetaHardware {
     public DcMotor backRight = null;
     public DcMotor liftMain;
     public DcMotor liftOther;
-    public Servo rightH;
-    public Servo leftH;
     public Servo rightV4b;
     public Servo leftV4b;
     public Servo rightClaw;
@@ -141,8 +139,7 @@ public class ThetaHardware {
 
         //servos
 
-        rightH = hwMap.get(Servo.class, "rightHoriz");
-        leftH = hwMap.get(Servo.class, "leftHoriz");
+
         rightV4b = hwMap.get(Servo.class, "rightV4b");
         leftV4b = hwMap.get(Servo.class, "leftV4b");
         rightClaw = hwMap.get(Servo.class, "rightClaw");
@@ -325,15 +322,7 @@ public class ThetaHardware {
         leftClaw.setPosition(constants.clawOpen);
     }
 
-    public void horiontalIn(){
-        rightH.setPosition(constants.righthorizontalIn);
-        leftH.setPosition(constants.lefthorizontalIn);
-    }
 
-    public void horiontalOut(){
-        rightH.setPosition(constants.righthorizontalExtend);
-        leftH.setPosition(constants.lefthorizontalExtend);
-    }
 
 
 
