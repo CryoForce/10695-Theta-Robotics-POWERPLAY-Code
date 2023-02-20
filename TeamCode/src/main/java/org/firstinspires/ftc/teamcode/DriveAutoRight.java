@@ -235,7 +235,7 @@ public class DriveAutoRight extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            controller.setPID(p, i, d);
+
             int armPos = robot.liftOther.getCurrentPosition();
             double pid = controller.calculate(armPos, target);
             double ff = Math.cos(Math.toRadians(target / ticks_in_degrees)) * f;

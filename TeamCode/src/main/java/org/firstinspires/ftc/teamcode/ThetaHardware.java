@@ -318,8 +318,8 @@ public class ThetaHardware {
     }
 
     public void openClaw(){
-        rightClaw.setPosition(constants.clawOpen);
-        leftClaw.setPosition(constants.clawOpen);
+        rightClaw.setPosition(constants.rightclawOpen);
+        leftClaw.setPosition(constants.leftclawOpen);
     }
 
 

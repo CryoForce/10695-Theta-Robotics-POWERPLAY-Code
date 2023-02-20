@@ -217,11 +217,9 @@ public class ThetaTeleop extends LinearOpMode {
                 //Open Claw
                 robot.openClaw();
 
-                if (clawTime.milliseconds() > 600) {
-                    //Pull Horizontal Extension In
-                }
 
-                if (liftTime.milliseconds() > 900) {
+
+                if (liftTime.milliseconds() > 600) {
                     //Lower Lift
 
                     liftPos = 0;
@@ -258,7 +256,7 @@ public class ThetaTeleop extends LinearOpMode {
                 //Close Claw
                 robot.closeClaw();
 
-                if (clawTime.milliseconds() > 250) {
+                if (clawTime.milliseconds() > 150) {
 
                     //Raise Virtual 4 Bar
                     robot.v4bUp();
@@ -266,7 +264,7 @@ public class ThetaTeleop extends LinearOpMode {
 
                 }
                 if (v4bPos == 2) {
-                    if(liftWaitTime.milliseconds() > 550){
+                    if(liftWaitTime.milliseconds() > 350){
 
                         //Raise Lift
                         liftPos = 1;
@@ -288,7 +286,7 @@ public class ThetaTeleop extends LinearOpMode {
                 //Close Claw
                 robot.closeClaw();
 
-                if (clawTime.milliseconds() > 250) {
+                if (clawTime.milliseconds() > 150) {
 
                     //Raise Virtual 4 Bar
                     robot.v4bUp();
@@ -296,7 +294,7 @@ public class ThetaTeleop extends LinearOpMode {
 
                 }
                 if (v4bPos == 3) {
-                    if (liftWaitTime.milliseconds() > 550) {
+                    if (liftWaitTime.milliseconds() > 350) {
                         //Raise Lift
                         liftPos = 2;
                     }
@@ -317,7 +315,7 @@ public class ThetaTeleop extends LinearOpMode {
                 //Close Claw
                 robot.closeClaw();
 
-                if (clawTime.milliseconds() > 250) {
+                if (clawTime.milliseconds() > 150) {
 
                     //Raise Virtual 4 Bar
                     robot.v4blowPole();
@@ -336,7 +334,7 @@ public class ThetaTeleop extends LinearOpMode {
                 //Close Claw
                 robot.closeClaw();
 
-                if (clawTime.milliseconds() > 250) {
+                if (clawTime.milliseconds() > 150) {
 
                     //Raise Virtual 4 Bar
                     robot.v4bGround();

@@ -2,7 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 public class Constants {
 
-   public double clawOpen = 0.34;
+   public double rightclawOpen = 0.37;
+   public double leftclawOpen = 0.31;
 
    public double leftClawClose = 0.47;
    public double rightClawClose = 0.20;
