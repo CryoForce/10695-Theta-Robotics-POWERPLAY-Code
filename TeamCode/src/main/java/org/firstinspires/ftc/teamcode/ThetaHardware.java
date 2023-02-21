@@ -104,14 +104,6 @@ public class ThetaHardware {
 
     ElapsedTime runtime = new ElapsedTime();
 
-    //imu
-    // The IMU sensor object
-    BNO055IMU imu;
-
-    // State used for updating telemetry
-    Orientation angles;
-    Acceleration gravity;
-    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
 
     /* Constructor */
@@ -175,6 +167,48 @@ public class ThetaHardware {
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftMain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftOther.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+        telemetry.addData("Status", "init Complete");    //
+
+    }
+
+
+    public void RRinit(HardwareMap ahwMap, Telemetry t) {
+        // Save reference to Hardware map
+        hwMap = ahwMap;
+
+        telemetry = t;
+
+        // Define and Initialize Motors
+
+
+        liftMain = hwMap.get(DcMotor.class, "liftMain");
+        liftOther = hwMap.get(DcMotor.class, "liftOther");
+
+        //servos
+
+
+        rightV4b = hwMap.get(Servo.class, "rightV4b");
+        leftV4b = hwMap.get(Servo.class, "leftV4b");
+        rightClaw = hwMap.get(Servo.class, "rightClaw");
+        leftClaw = hwMap.get(Servo.class, "leftClaw");
+
+
+
+        // Set all motors to zero power
+
+        liftMain.setPower(0);
+        liftOther.setPower(0);
+
+
+        // Set all motors to run without encoders.
+        // May want to use RUN_USING_ENCODERS if encoders are installed.
+
+        liftOther.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         liftMain.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftOther.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

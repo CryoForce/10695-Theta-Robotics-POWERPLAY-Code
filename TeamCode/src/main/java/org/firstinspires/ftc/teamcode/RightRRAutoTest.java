@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(group = "drive")
+@Autonomous(name="RightRRAutoTest", group="Auton")
 public class RightRRAutoTest extends LinearOpMode {
 
 
@@ -56,8 +57,27 @@ public class RightRRAutoTest extends LinearOpMode {
 
     int aprilTPos = 0;
 
+    enum Stage {pole1, scorepole1, grab, topole, drop, drivetograb, park, end}
+    Stage stage = Stage.pole1;
+
+    int liftPos = 0;
+    static int target = 0;
+    private final double ticks_in_degrees = 384.5 / 360;
+    PIDController controller;
+
+    public static double p = 0.018, i = 0, d = 0.001;
+    public static double f = 0.075;
+
+    Constants cons = new Constants();
+
+
     @Override
     public void runOpMode() throws InterruptedException {
+
+        controller = new PIDController(p, i, d);
+
+
+
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -77,11 +97,42 @@ public class RightRRAutoTest extends LinearOpMode {
             }
         });
 
-        Trajectory traj = drive.trajectoryBuilder(new Pose2d())
+
+        Trajectory topark2 = drive.trajectoryBuilder(new Pose2d())
                 .splineToConstantHeading(new Vector2d(32, -2), 0)
                 .build();
 
+        Trajectory pole1p = drive.trajectoryBuilder(topark2.end())
+                .lineToConstantHeading( new Vector2d(48, -2))
+                .build();
 
+        Trajectory scorepole1p = drive.trajectoryBuilder(pole1p.end())
+                .lineToLinearHeading(new Pose2d(51, 0, Math.toRadians(45)))
+                .build();
+
+
+
+//        Trajectory park2 = drive.trajectoryBuilder(pole1.end())
+//                .lineToConstantHeading( new Vector2d(34, -2))
+//                .build();
+
+
+
+
+
+        robot.RRinit(hardwareMap, telemetry);
+
+//         Send telemetry message to signify robot waiting;
+
+
+
+        robot.rightV4b.setPosition(0.88);
+        robot.leftV4b.setPosition(0.88);
+        liftPos = 0;
+
+
+        robot.rightClaw.setPosition(0.2);
+        robot.leftClaw.setPosition(0.47);
 
         while (!opModeIsActive())
         {
@@ -143,27 +194,75 @@ public class RightRRAutoTest extends LinearOpMode {
 
         waitForStart();
 
-        if (isStopRequested()) return;
 
-        if(aprilTPos == 1){
+        while (opModeIsActive() && !isStopRequested()) {
+
+            drive.update();
+            controller.setPID(p, i, d);
+            int armPos = robot.liftOther.getCurrentPosition();
+            double pid = controller.calculate(armPos, target);
+            double ff = Math.cos(Math.toRadians(target / ticks_in_degrees)) * f;
+
+            double liftPower = pid + ff;
+
+            robot.liftOther.setPower(liftPower);
+            robot.liftMain.setPower(liftPower);
+
+            if (liftPos == 0) {
+                target = 25;
+            } else if (liftPos == 1) {
+                target = 925;
+
+            } else if (liftPos == 2) {
+                target = 1690;
+            }
+
+            switch (stage) {
+                case pole1:
+                    liftPos = 2;
+                    robot.v4bUp();
+                    drive.followTrajectory(topark2);
+                    liftPos = 2;
+                    drive.followTrajectory(pole1p);
+                    stage = Stage.scorepole1;
+                    break;
+                case scorepole1:
+
+                    drive.followTrajectory(scorepole1p);
+                    robot.v4bSH();
+                    robot.thetaWait(0.25);
+                    robot.openClaw();
+                    robot.thetaWait(1.5);
+
+                    robot.rightV4b.setPosition(cons.topCone);
+                    robot.leftV4b.setPosition(cons.topCone);
+                    liftPos=0;
+                    stage = Stage.end;
+
+                    break;
 
 
+                case park:
+                    if (aprilTPos == 1) {
+
+
+                    }
+                    if (aprilTPos == 2) {
+//                    drive.followTrajectory(park2);
+                    stage = Stage.end;
+                    }
+                    if (aprilTPos == 3) {
+
+                    }
+                    break;
+
+                case end:
+
+                    break;
+            }
         }
-        if(aprilTPos == 2){
-            drive.followTrajectory(traj);
-        }
-        if(aprilTPos == 3){
-
-        }
 
 
 
-//        sleep(2000);
-//
-//        drive.followTrajectory(
-//                drive.trajectoryBuilder(traj.end(), true)
-//                        .splineTo(new Vector2d(0, 0), Math.toRadians(180))
-//                        .build()
-//        );
     }
 }
