@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.robocol.RobocolParsable;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -57,7 +58,9 @@ public class RightRRAutoTest extends LinearOpMode {
 
     int aprilTPos = 0;
 
-    enum Stage {pole1, scorepole1, grab, topole, drop, drivetograb, park, end}
+    int cyclenum = 0;
+
+    enum Stage {pole1, scorepole1 ,liftpole1, grab, topole, drop, drivetograb, park, end }
     Stage stage = Stage.pole1;
 
     int liftPos = 0;
@@ -106,15 +109,20 @@ public class RightRRAutoTest extends LinearOpMode {
                 .lineToConstantHeading( new Vector2d(48, -2))
                 .build();
 
-        Trajectory scorepole1p = drive.trajectoryBuilder(pole1p.end())
-                .lineToLinearHeading(new Pose2d(51, 0, Math.toRadians(45)))
+        Trajectory scorepole1p = drive.trajectoryBuilder(topark2.end())
+                .lineToLinearHeading(new Pose2d(52, 0, Math.toRadians(45)))
+                .build();
+
+        Trajectory toconestack1 = drive.trajectoryBuilder(scorepole1p.end())
+                .splineToLinearHeading(new Pose2d(32, -2, Math.toRadians(90)), 0)
                 .build();
 
 
+        Trajectory park2 = drive.trajectoryBuilder(scorepole1p.end())
+                .lineToLinearHeading( new Pose2d(34, -2, Math.toRadians(0)))
+                .build();
 
-//        Trajectory park2 = drive.trajectoryBuilder(pole1.end())
-//                .lineToConstantHeading( new Vector2d(34, -2))
-//                .build();
+
 
 
 
@@ -219,13 +227,24 @@ public class RightRRAutoTest extends LinearOpMode {
 
             switch (stage) {
                 case pole1:
+
                     liftPos = 2;
                     robot.v4bUp();
+
                     drive.followTrajectory(topark2);
-                    liftPos = 2;
+
+                    telemetry.addData("liftpos", liftPos);
+                    telemetry.update();
+
+
+                    stage = Stage.liftpole1;
+                    break;
+                case liftpole1:
+
                     drive.followTrajectory(pole1p);
                     stage = Stage.scorepole1;
                     break;
+
                 case scorepole1:
 
                     drive.followTrajectory(scorepole1p);
@@ -237,7 +256,7 @@ public class RightRRAutoTest extends LinearOpMode {
                     robot.rightV4b.setPosition(cons.topCone);
                     robot.leftV4b.setPosition(cons.topCone);
                     liftPos=0;
-                    stage = Stage.end;
+                    stage = Stage.park;
 
                     break;
 
@@ -248,7 +267,7 @@ public class RightRRAutoTest extends LinearOpMode {
 
                     }
                     if (aprilTPos == 2) {
-//                    drive.followTrajectory(park2);
+                    drive.followTrajectory(park2);
                     stage = Stage.end;
                     }
                     if (aprilTPos == 3) {
@@ -259,6 +278,7 @@ public class RightRRAutoTest extends LinearOpMode {
                 case end:
 
                     break;
+
             }
         }
 
