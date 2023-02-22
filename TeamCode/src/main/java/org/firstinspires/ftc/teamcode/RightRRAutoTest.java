@@ -114,7 +114,7 @@ public class RightRRAutoTest extends LinearOpMode {
                 .build();
 
         Trajectory toconestack1 = drive.trajectoryBuilder(scorepole1p.end())
-                .splineToLinearHeading(new Pose2d(32, -2, Math.toRadians(90)), 0)
+                .splineToLinearHeading(new Pose2d(51.25, -32, Math.toRadians(90)), 0)
                 .build();
 
 
