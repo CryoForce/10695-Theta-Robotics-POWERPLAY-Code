@@ -102,7 +102,7 @@ public class RightRRAutoTest extends LinearOpMode {
 
 
         Trajectory topark2 = drive.trajectoryBuilder(new Pose2d())
-                .splineToConstantHeading(new Vector2d(32, -2), 0)
+                .splineToConstantHeading(new Vector2d(44, -2), 0)
                 .build();
 
         Trajectory pole1p = drive.trajectoryBuilder(topark2.end())
@@ -237,11 +237,6 @@ public class RightRRAutoTest extends LinearOpMode {
                     telemetry.update();
 
 
-                    stage = Stage.liftpole1;
-                    break;
-                case liftpole1:
-
-                    drive.followTrajectory(pole1p);
                     stage = Stage.scorepole1;
                     break;
 
