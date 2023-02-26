@@ -140,8 +140,7 @@ public class LiftAutoTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            robot.liftOther.setPower(liftPower);
-            robot.liftMain.setPower(liftPower);
+
         }
 
 

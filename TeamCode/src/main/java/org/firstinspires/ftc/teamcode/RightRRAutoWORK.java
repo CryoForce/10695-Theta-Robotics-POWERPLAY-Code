@@ -6,7 +6,6 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.robocol.RobocolParsable;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -21,8 +20,8 @@ import java.util.ArrayList;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(name="RightRRAutoTest", group="Auton")
-public class RightRRAutoTest extends LinearOpMode {
+@Autonomous(name="RightRRAutoWORK ", group="Auton")
+public class RightRRAutoWORK extends LinearOpMode {
 
 
 
@@ -60,8 +59,12 @@ public class RightRRAutoTest extends LinearOpMode {
 
     int cyclenum = 0;
 
-    enum Stage {pole1, scorepole1 ,liftpole1, grab, topole, drop, drivetograb, park, end }
+    enum Stage {pole1, scorepole1 ,liftpole1, grab, topole, drop, drivetograb, park, end, score1}
     Stage stage = Stage.pole1;
+    ElapsedTime scoreTime = new ElapsedTime();
+    ElapsedTime dropTime = new ElapsedTime();
+    ElapsedTime liftTime = new ElapsedTime();
+    int c = 0;
 
     int liftPos = 0;
     static int target = 0;
@@ -102,24 +105,27 @@ public class RightRRAutoTest extends LinearOpMode {
 
 
         Trajectory topark2 = drive.trajectoryBuilder(new Pose2d())
-                .splineToConstantHeading(new Vector2d(44, -2), 0)
+                .splineToConstantHeading(new Vector2d(44, -1), 0)
                 .build();
 
-        Trajectory pole1p = drive.trajectoryBuilder(topark2.end())
-                .lineToConstantHeading( new Vector2d(48, -2))
-                .build();
 
         Trajectory scorepole1p = drive.trajectoryBuilder(topark2.end())
-                .lineToLinearHeading(new Pose2d(52, 0, Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(52, 1.5, Math.toRadians(45)))
                 .build();
 
-        Trajectory toconestack1 = drive.trajectoryBuilder(scorepole1p.end())
-                .splineToLinearHeading(new Pose2d(51.25, -32, Math.toRadians(90)), 0)
-                .build();
+
 
 
         Trajectory park2 = drive.trajectoryBuilder(scorepole1p.end())
-                .lineToLinearHeading( new Pose2d(34, -2, Math.toRadians(0)))
+                .lineToLinearHeading( new Pose2d(26.5, -2, Math.toRadians(0)))
+                .build();
+
+        Trajectory park1 = drive.trajectoryBuilder(park2.end())
+                .lineToLinearHeading( new Pose2d(26.5, 23, Math.toRadians(0)))
+                .build();
+
+        Trajectory park3 = drive.trajectoryBuilder(park2.end())
+                .lineToLinearHeading( new Pose2d(26.5, -25, Math.toRadians(0)))
                 .build();
 
 
@@ -218,55 +224,107 @@ public class RightRRAutoTest extends LinearOpMode {
 
             if (liftPos == 0) {
                 target = 25;
+
             } else if (liftPos == 1) {
                 target = 925;
 
+
             } else if (liftPos == 2) {
                 target = 1690;
+
             }
 
             switch (stage) {
                 case pole1:
-
-                    liftPos = 2;
                     robot.v4bUp();
 
-                    drive.followTrajectory(topark2);
-
-                    telemetry.addData("liftpos", liftPos);
-                    telemetry.update();
-
+                    drive.followTrajectoryAsync(topark2);
 
                     stage = Stage.scorepole1;
                     break;
 
                 case scorepole1:
 
-                    drive.followTrajectory(scorepole1p);
-                    robot.v4bSH();
-                    robot.thetaWait(0.25);
-                    robot.openClaw();
-                    robot.thetaWait(1.5);
 
-                    robot.rightV4b.setPosition(cons.topCone);
-                    robot.leftV4b.setPosition(cons.topCone);
-                    liftPos=0;
-                    stage = Stage.park;
+                    liftPos = 2;
+
+                    if(!drive.isBusy()) {
+
+                        drive.followTrajectoryAsync(scorepole1p);
+                        robot.v4bSH();
+
+                        dropTime.reset();
+                        liftTime.reset();
+
+                        stage = Stage.score1;
+
+                    }
+
+                case score1:
+
+                    if(!drive.isBusy()) {
+
+
+                        robot.openClaw();
+
+
+                        if (dropTime.milliseconds() > 2000) {
+
+                            robot.rightV4b.setPosition(cons.topCone);
+                            robot.leftV4b.setPosition(cons.topCone);
+
+                        }
+                        if (liftTime.milliseconds() > 2300) {
+                            liftPos = 0;
+                            stage = Stage.park;
+                        }
+                    }
+
 
                     break;
 
 
                 case park:
                     if (aprilTPos == 1) {
-
-
+                        if(c == 0) {
+                            if (!drive.isBusy()) {
+                                liftPos = 0;
+                                drive.followTrajectoryAsync(park2);
+                                c++;
+                            }
+                        }
+                        if(c == 1) {
+                            if (!drive.isBusy()) {
+                                liftPos = 0;
+                                drive.followTrajectoryAsync(park1);
+                                stage = Stage.end;
+                            }
+                        }
                     }
                     if (aprilTPos == 2) {
-                    drive.followTrajectory(park2);
-                    stage = Stage.end;
+
+                        if(!drive.isBusy()) {
+                            liftPos = 0;
+                            drive.followTrajectoryAsync(park2);
+                            stage = Stage.end;
+                        }
+
                     }
                     if (aprilTPos == 3) {
-
+                        if(c == 0) {
+                            if (!drive.isBusy()) {
+                                liftPos = 0;
+                                drive.followTrajectoryAsync(park2);
+                                c++;
+                            }
+                        }
+                        if(c == 1) {
+                            if (!drive.isBusy()) {
+                                liftPos = 0;
+                                drive.followTrajectoryAsync(park3);
+                                stage = Stage.end;
+                            }
+                        }
                     }
                     break;
 
