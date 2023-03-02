@@ -110,7 +110,7 @@ public class RightRRAutoWORK extends LinearOpMode {
 
 
         Trajectory scorepole1p = drive.trajectoryBuilder(topark2.end())
-                .lineToLinearHeading(new Pose2d(52, 1.5, Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(52, 0.5, Math.toRadians(45)))
                 .build();
 
 
@@ -251,10 +251,11 @@ public class RightRRAutoWORK extends LinearOpMode {
                     if(!drive.isBusy()) {
 
                         drive.followTrajectoryAsync(scorepole1p);
-                        robot.v4bSH();
+
 
                         dropTime.reset();
                         liftTime.reset();
+                        scoreTime.reset();
 
                         stage = Stage.score1;
 
@@ -264,9 +265,13 @@ public class RightRRAutoWORK extends LinearOpMode {
 
                     if(!drive.isBusy()) {
 
+                        robot.v4bSH();
 
-                        robot.openClaw();
+                        if(scoreTime.milliseconds() > 1100) {
 
+
+                            robot.openClaw();
+                        }
 
                         if (dropTime.milliseconds() > 2000) {
 

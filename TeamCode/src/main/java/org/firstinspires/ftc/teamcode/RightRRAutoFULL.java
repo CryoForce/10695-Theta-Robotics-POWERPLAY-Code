@@ -20,8 +20,8 @@ import java.util.ArrayList;
 /*
  * This is an example of a more complex path to really test the tuning.
  */
-@Autonomous(name="RightRRAutoTEST ", group="Auton")
-public class RightRRAutoTEST extends LinearOpMode {
+@Autonomous(name="RightRRAutoFULL", group="Auton")
+public class RightRRAutoFULL extends LinearOpMode {
 
 
 
@@ -72,15 +72,22 @@ public class RightRRAutoTEST extends LinearOpMode {
     ElapsedTime clawTime = new ElapsedTime();
 
 
+
     int liftPos = 0;
     static int target = 0;
     private final double ticks_in_degrees = 384.5 / 360;
     PIDController controller;
 
-    public static double p = 0.014, i = 0, d = 0.000;
+    public static double p = 0.016, i = 0, d = 0.001;
     public static double f = 0.075;
 
     Constants cons = new Constants();
+
+
+
+    //-----Trajectories-----//
+    Trajectory scorepole1p;
+    Trajectory topark2;
 
 
     @Override
@@ -110,14 +117,20 @@ public class RightRRAutoTEST extends LinearOpMode {
         });
 
 
-        Trajectory topark2 = drive.trajectoryBuilder(new Pose2d())
-                .splineToConstantHeading(new Vector2d(44, -2), 0)
+
+        scorepole1p = drive.trajectoryBuilder(topark2.end())
+                .lineToLinearHeading(new Pose2d(51, -0.5, Math.toRadians(45)))
                 .build();
 
 
-        Trajectory scorepole1p = drive.trajectoryBuilder(topark2.end())
-                .lineToLinearHeading(new Pose2d(52.75, 0, Math.toRadians(45)))
+        topark2 = drive.trajectoryBuilder(new Pose2d())
+                .splineToConstantHeading(new Vector2d(44, -2),0)
+                .addDisplacementMarker(() ->
+                    drive.followTrajectoryAsync(scorepole1p)
+                )
                 .build();
+
+
 
 
         //----------1st Cycle----------//
@@ -129,7 +142,7 @@ public class RightRRAutoTEST extends LinearOpMode {
                 .build();
 
         Trajectory toconestack1 = drive.trajectoryBuilder(lineconestack1.end())
-                .lineToLinearHeading(new Pose2d(50, -29.5, Math.toRadians(95)))
+                .lineToLinearHeading(new Pose2d(49.75, -29, Math.toRadians(95)))
                 .build();
 
         Trajectory topoles = drive.trajectoryBuilder(toconestack1.end())
@@ -137,7 +150,7 @@ public class RightRRAutoTEST extends LinearOpMode {
                 .build();
 
         Trajectory scorepole = drive.trajectoryBuilder(topoles.end())
-                .lineToLinearHeading(new Pose2d(54.25, -1.5, Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(51, -3.5, Math.toRadians(45)))
                 .build();
 
 
@@ -148,7 +161,7 @@ public class RightRRAutoTEST extends LinearOpMode {
                 .build();
 
         Trajectory toconestack2 = drive.trajectoryBuilder(lineconestack2.end())
-                .lineToLinearHeading(new Pose2d(50, -29.5, Math.toRadians(95)))
+                .lineToLinearHeading(new Pose2d(49.75, -29, Math.toRadians(95)))
                 .build();
 
         Trajectory topoles2 = drive.trajectoryBuilder(toconestack2.end())
@@ -156,7 +169,7 @@ public class RightRRAutoTEST extends LinearOpMode {
                 .build();
 
         Trajectory scorepole2 = drive.trajectoryBuilder(topoles2.end())
-                .lineToLinearHeading(new Pose2d(54.25, -1.5, Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(51, -3, Math.toRadians(45)))
                 .build();
 
 
@@ -168,7 +181,7 @@ public class RightRRAutoTEST extends LinearOpMode {
                 .build();
 
         Trajectory toconestack3 = drive.trajectoryBuilder(lineconestack3.end())
-                .lineToLinearHeading(new Pose2d(51 , -29.5, Math.toRadians(95)))
+                .lineToLinearHeading(new Pose2d(49.75, -29, Math.toRadians(95)))
                 .build();
 
         Trajectory topoles3 = drive.trajectoryBuilder(toconestack3.end())
@@ -176,18 +189,18 @@ public class RightRRAutoTEST extends LinearOpMode {
                 .build();
 
         Trajectory scorepole3 = drive.trajectoryBuilder(topoles3.end())
-                .lineToLinearHeading(new Pose2d(54.25, -1.5, Math.toRadians(45)))
+                .lineToLinearHeading(new Pose2d(51, -3.5, Math.toRadians(45)))
                 .build();
 
 
 
 
         Trajectory park2 = drive.trajectoryBuilder(scorepole3.end())
-                .lineToLinearHeading( new Pose2d(51, -2, Math.toRadians(90)))
+                .lineToLinearHeading( new Pose2d(51, -2, Math.toRadians(0)))
                 .build();
 
         Trajectory park1 = drive.trajectoryBuilder(park2.end())
-                .lineToLinearHeading( new Pose2d(49.75, 21, Math.toRadians(90)))
+                .lineToLinearHeading( new Pose2d(49.75, 23, Math.toRadians(90)))
                 .build();
 
         Trajectory park3 = drive.trajectoryBuilder(park2.end())
@@ -316,7 +329,8 @@ public class RightRRAutoTEST extends LinearOpMode {
 
                     if(!drive.isBusy()) {
 
-                        drive.followTrajectoryAsync(scorepole1p);
+
+
                         dropTime.reset();
                         liftTime.reset();
                         scoreTime.reset();
@@ -547,8 +561,8 @@ public class RightRRAutoTEST extends LinearOpMode {
                             }
                             if (dropTime.milliseconds() > 550) {
 
-                                robot.rightV4b.setPosition(cons.thirdCone);
-                                robot.leftV4b.setPosition(cons.thirdCone);
+                                robot.rightV4b.setPosition(cons.secondCone);
+                                robot.leftV4b.setPosition(cons.secondCone);
 
                             }
                             if (liftTime.milliseconds() > 575) {
